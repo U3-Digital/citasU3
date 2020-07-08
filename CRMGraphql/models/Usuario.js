@@ -36,6 +36,10 @@ const UsuariosSchema = mongoose.Schema({
         type: String,
         required: true,
         trim: true  
+    },
+    empresa:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: ('Empresa') 
     }
 });
 

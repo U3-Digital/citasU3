@@ -14,11 +14,13 @@ const typeDefs = gql`
         telefono: String
         status: StatusUsuario
         rol: rolUsuario
+        empresa: Empresa
     }
     type Producto{
         id: ID
         nombre: String
         precio: Float
+        empresa: ID
     }
 
     type Cliente{
@@ -27,8 +29,8 @@ const typeDefs = gql`
         apellido: String
         email: String
         telefono: String
-        status: StatusUsuario
-        #vendedor: ID
+        status: StatusCliente
+        empresa: Empresa
     }
 
     type PedidoGrupo{
@@ -57,7 +59,35 @@ const typeDefs = gql`
         total: Float
         vendedor: [Usuario]
     }
+
+    type Fotos{
+        foto: String
+    }
+
+    type Empresa{
+        id:ID
+        nombre: String
+        direccion: String
+        email: String
+        facebook: String
+        instagram: String
+        whatsapp: String
+        fotos: String
+        status: StatusEmpresa
+    }
+
     
+    input EmpresaInput {
+        nombre: String!
+        direccion: String!
+        email: String!
+        facebook: String
+        instagram: String
+        whatsapp: String
+        fotos: String!
+        status: StatusEmpresa!
+    }
+
     input UsuarioInput {
         nombre: String!
         apellido : String!
@@ -66,6 +96,7 @@ const typeDefs = gql`
         telefono: String!
         status: StatusUsuario!
         rol: rolUsuario!
+        empresa: ID
     }
 
     input AutenticarInput{
@@ -76,6 +107,7 @@ const typeDefs = gql`
     input ProductoInput{
         nombre: String!
         precio: Float!
+        empresa: ID!
     }
 
     input ClienteInput{
@@ -83,8 +115,9 @@ const typeDefs = gql`
         apellido: String!
         email: String!
         telefono: String!
-        status: StatusUsuario!
-        password: String!
+        status: StatusCliente!
+        password: String!,
+        empresa: ID!
 
     }
 
@@ -101,6 +134,7 @@ const typeDefs = gql`
         empleado: ID!
         fecha: String!
         estado: EstadoPedido!
+
     }
 
     enum EstadoPedido{
@@ -110,11 +144,22 @@ const typeDefs = gql`
     }
 
     enum StatusUsuario{
-        BUENO
-        MALO
+        HABILITADO
+        DESHABILITADO
+    }
+    enum StatusCliente{
+        PENDIENTE
+        HABILITADO
+        DESHABILITADO
+    }
+
+    enum StatusEmpresa{
+        HABILITADO
+        DESHABILITADO
     }
 
     enum rolUsuario{
+        SUPERADMINISTRADOR
         ADMINISTRADOR
         EMPLEADO
     }
@@ -122,8 +167,10 @@ const typeDefs = gql`
     type Query{
         #usuarios
         obtenerUsuario : Usuario
+        obtenerUnUsuario(id: ID!) : Usuario
+        obtenerUsuarios: [Usuario]
         #Productos
-        obtenerProductos: [Producto]
+        obtenerProductos(id: ID!): [Producto]
         obtenerProducto(id: ID!): Producto
         #clientes
         obtenerClientes: [Cliente]
@@ -139,13 +186,15 @@ const typeDefs = gql`
         mejoresVendedores: [TopVendedor]
 
         buscarProducto(texto: String!): [Producto]
-
+        #empresas
+        obtenerEmpresas: [Empresa]
+        obtenerEmpresa(id:ID!): Empresa
     }
     type Mutation {
         # Usuarios
         nuevoUsuario(input: UsuarioInput ) : Usuario
         autenticarUsuario(input: AutenticarInput) : Token
-
+        eliminarUsuario(id: ID!): String
 
         # Productos
         nuevoProducto(input: ProductoInput) : Producto
@@ -161,6 +210,11 @@ const typeDefs = gql`
         nuevoPedido(input: PedidoInput): Pedido
         actualizarPedido(id: ID!, input: PedidoInput ) : Pedido
         eliminarPedido(id: ID!) : String
+    
+        #empresas
+        nuevaEmpresa(input: EmpresaInput ): Empresa
+        eliminarEmpresa(id: ID!): String
+        actualizarEmpresa(id: ID! input : EmpresaInput): Empresa
     }
 `;
 module.exports = typeDefs;

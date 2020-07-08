@@ -14,8 +14,7 @@ const ClientesSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        trim: true,
-        unique: true
+        trim: true
     },
     telefono: {
         type: String,
@@ -35,12 +34,12 @@ const ClientesSchema = mongoose.Schema({
         type: String,
         required: true,
         trim: true  
-    }
-    /*
-    vendedor: {
+    },
+    empresa:{
         type: mongoose.Schema.Types.ObjectId,
-        require: true,
-        ref: 'Usuario'
-    }*/
+        required: true,
+        ref: ('Empresa') 
+    }
+   
 });
 module.exports = mongoose.model('Cliente',ClientesSchema);

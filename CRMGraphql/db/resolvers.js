@@ -4,6 +4,8 @@ const Pedido = require('../models/Pedido');
 const Cliente = require('../models/Cliente');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Empresa = require('../models/Empresa');
+const { Error } = require('mongoose');
 require('dotenv').config({path: 'variables.env'});
 
 const crearToken = (usuario, secreta, expiresIn) =>{
@@ -18,9 +20,32 @@ const resolvers = {
         obtenerUsuario: async (_,{},ctx) =>{
             return ctx.usuario;
         },
-        obtenerProductos: async() =>{
+        obtenerUnUsuario: async(_,{id},ctx) =>{
+            if(ctx.usuario.rol !== 'SUPERADMINISTRADOR'){
+                throw new Error('No cuentas con las credenciales');
+            }
+            const existeUsuario = Usuario.findById(id).populate('empresa');
+            if(!existeUsuario){
+                throw new Error('El Usuario No Existe');
+            }
+            return existeUsuario;
+        } ,
+        obtenerUsuarios: async (_,{},ctx) =>{
+            const {rol} = ctx.usuario;
+            
+            if(rol !== 'SUPERADMINISTRADOR'){
+                throw new Error('no cuenta con las credenciales para esta accion');
+            }
+            const usuarios = await Usuario.find({});
+                
+            return usuarios;
+            
+            
+            
+        },
+        obtenerProductos: async(_,{id}) =>{
             try {
-                const productos = await Producto.find({});
+                const productos = await Producto.find({empresa: id.toString()});
                 return productos;
             } catch (error) {
                 console.log(error);
@@ -36,7 +61,7 @@ const resolvers = {
         },
         obtenerClientes: async () =>{
                 try {
-                    const clientes = await Cliente.find({});
+                    const clientes = await Cliente.find({}).populate('empresa');
                     return clientes;
                 } catch (error) {
                     console.log(error);
@@ -75,7 +100,7 @@ const resolvers = {
         obtenerPedidosVendedor: async (_,{},ctx) =>{
             try {
                 const pedidos = await Pedido.find({empleado : ctx.usuario.id}).populate('cliente');
-                console.log(ctx.usuario.id);
+                //console.log(ctx.usuario.id);
                 return pedidos;
             } catch (error) {
                 console.log(error);
@@ -152,16 +177,45 @@ const resolvers = {
             const productos = await Producto.find({ $text: {$search : texto }}).limit(10);
 
             return productos;
+        },
+        obtenerEmpresas: async () =>{
+            try {
+                const empresas = await Empresa.find({});
+                //console.log(empresas);
+                return empresas;
+            } catch (error) {
+                console.log(error);
+            }
+            
+        },
+        obtenerEmpresa: async (_,{id},ctx) =>{  
+
+            
+            const empresa = await Empresa.findById(id);
+
+            if(!empresa){
+                throw new Error('La empresa no existe');
+            }
+
+            return empresa;
         }
     },
     Mutation: {
         nuevoUsuario: async (_,{input}) =>{
-            const{email,password} = input;
+            const{email,password,rol,empresa} = input;
             //revisar usuario ya esta registrado
             const existeUsuario = await Usuario.findOne({email});
             if(existeUsuario){
                 throw new Error('El usuario ya esta registrado');
             }
+            if(rol === "SUPERADMINISTRADOR" && empresa !== ""){
+                throw new Error('Un superadministrador no puede tener una empresa');
+            }
+
+            if(input.empresa === ""){
+                input.empresa = null;
+            }
+
             //hashear su password
             const salt= await bcryptjs.genSalt(10);
             input.password = await bcryptjs.hash(password, salt);
@@ -175,6 +229,17 @@ const resolvers = {
             } catch (error) {
                 console.log(error);
             }
+        },
+        eliminarUsuario: async (_,{id},ctx) =>{
+            
+            const {rol} = ctx.usuario;
+
+            if(rol !== 'SUPERADMINISTRADOR'){
+                throw new Error('no cuentas con las credenciales para registrar una empresa');
+            }
+            
+            await Usuario.findByIdAndDelete({_id: id});
+            return "Usuario Eliminado";
         },
         autenticarUsuario: async (_,{input}) =>{
             const {email,password} = input;
@@ -226,19 +291,17 @@ const resolvers = {
           return "Producto Eliminado";
         },
         nuevoCliente: async (_,{input},ctx) =>{
-            const {email,password} = input;
+            const {email,password, empresa} = input;
             //console.log(ctx);
             //verificar si el cliente ya esta registrado
             //console.log(input);
-            const cliente = await Cliente.findOne({email});
+            const cliente = await Cliente.findOne({email, empresa});
             if(cliente){
                 throw new Error('Ese Cliente ya esta registrado');
             } 
             //hashear
             const salt= await bcryptjs.genSalt(10);
             input.password = await bcryptjs.hash(password, salt);
-
-            console.log(input);
             const nuevoCliente = new Cliente(input);
             //asignar el vendedor
             //nuevoCliente.vendedor = ctx.usuario.id;
@@ -275,9 +338,7 @@ const resolvers = {
                 throw new Error ('Ese cliente no existe')
             }
             //verificar si el vendedor es quien edita
-            if(cliente.vendedor.toString() !== ctx.usuario.id){
-                throw new Error('No tienes las credenciales');
-            }
+            
             //eliminar el cliente
             await Cliente.findOneAndDelete({_id : id});
             return "Cliente Eliminado";            
@@ -349,6 +410,60 @@ const resolvers = {
             //eliminar de la base de datos
             await Pedido.findOneAndDelete({_id: id});
             return "Pedido eliminado"
+        },
+        nuevaEmpresa: async (_,{input},ctx) =>{
+            const {email} = input;
+            const {rol} = ctx.usuario;
+
+            if(rol !== 'SUPERADMINISTRADOR'){
+                throw new Error('no cuentas con las credenciales para registrar una empresa');
+            }
+
+            const existeEmpresa = await Empresa.findOne({email});
+            if(existeEmpresa){
+                throw new Error('La empresa ya esta registrada');
+            }
+            
+            try {
+                //guardarlo en la BD
+                const empresa = new Empresa(input);
+                empresa.save(); //guardarlo
+                return empresa; 
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        eliminarEmpresa: async (_,{id},ctx) =>{
+            const existeEmpresa = await Empresa.findById(id);
+            console.log(ctx.usuario)
+            const {rol} = ctx.usuario;
+
+            if(rol !== 'SUPERADMINISTRADOR'){
+                throw new Error('no cuentas con las credenciales para registrar una empresa');
+            }
+
+            if(!existeEmpresa){
+                throw new Error('no existe esa empresa');
+            }
+
+            await Empresa.findOneAndDelete({_id : id});
+            return "Empresa eliminada"; 
+        },
+        actualizarEmpresa: async (_,{id,input},ctx) => {
+            let empresa = await Empresa.findById(id);
+            const {rol} = ctx.usuario;
+
+            if(rol !== 'SUPERADMINISTRADOR'){
+                throw new Error('no cuentas con las credenciales para registrar una empresa');
+            }
+            
+            if(!empresa){
+                throw new Error ('La empresa no existe');
+            }
+
+            empresa = await Empresa.findOneAndUpdate({_id : id}, input,{new: true});
+            return empresa;
         }
 
     }
