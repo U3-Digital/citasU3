@@ -1,15 +1,19 @@
 const mongoose = require('mongoose');
 
-const ProductosSchema = mongoose.Schema({
+const CuponesSchema = mongoose.Schema({
     nombre:{
         type: String,
         required: true,
         trim: true
     },
-    precio: {
+    descuento:{
         type: Number,
         required: true,
         trim: true
+    },
+    vigencia:{
+        type: Date,
+        default: Date.now()
     },
     empresa:{
         type: mongoose.Schema.Types.ObjectId,
@@ -17,6 +21,4 @@ const ProductosSchema = mongoose.Schema({
     }
 });
 
-
-ProductosSchema.index({nombre : 'text'});
-module.exports = mongoose.model('Producto',ProductosSchema);
+module.exports = mongoose.model('Cupon', CuponesSchema);

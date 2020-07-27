@@ -11,7 +11,6 @@ const PedidosSchema = mongoose.Schema({
     },
     cliente: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: ('Cliente') 
     },
     empleado: {
@@ -26,6 +25,15 @@ const PedidosSchema = mongoose.Schema({
     fecha:{
         type: Date,
         default: Date.now()
+    },
+    empresa:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: ('Empresa') 
+    },
+    cupon:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: ('Cupon')
     }
     
 });

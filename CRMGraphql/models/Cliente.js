@@ -33,7 +33,8 @@ const ClientesSchema = mongoose.Schema({
     status:{
         type: String,
         required: true,
-        trim: true  
+        trim: true  ,
+        default: "PENDIENTE"
     },
     empresa:{
         type: mongoose.Schema.Types.ObjectId,

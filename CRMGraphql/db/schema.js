@@ -48,6 +48,8 @@ const typeDefs = gql`
         empleado : Usuario
         fecha: String 
         estado: EstadoPedido
+        empresa: ID
+        cupon: Cupon
     }
 
     type TopCliente{
@@ -76,7 +78,21 @@ const typeDefs = gql`
         status: StatusEmpresa
     }
 
-    
+    type Cupon{
+        id: ID
+        nombre: String
+        descuento: Float
+        vigencia: String
+        empresa: ID
+    }
+
+    input CuponInput {
+        nombre: String!
+        descuento: Float!
+        vigencia: String!
+        empresa: ID
+    }
+
     input EmpresaInput {
         nombre: String!
         direccion: String!
@@ -84,7 +100,7 @@ const typeDefs = gql`
         facebook: String
         instagram: String
         whatsapp: String
-        fotos: String!
+        fotos: String
         status: StatusEmpresa!
     }
 
@@ -99,25 +115,42 @@ const typeDefs = gql`
         empresa: ID
     }
 
+    input UsuarioInputActualizar {
+        nombre: String
+        apellido : String
+        email: String
+        password: String
+        telefono: String
+        status: StatusUsuario
+        rol: rolUsuario
+        empresa: ID
+    }
+
     input AutenticarInput{
         email: String!
         password: String!
     }
 
-    input ProductoInput{
-        nombre: String!
-        precio: Float!
+    input AutenticarClienteInput{
+        email: String!
+        password: String!
         empresa: ID!
     }
 
-    input ClienteInput{
+    input ProductoInput{
         nombre: String!
-        apellido: String!
-        email: String!
-        telefono: String!
-        status: StatusCliente!
-        password: String!,
-        empresa: ID!
+        precio: Float!
+        empresa: ID
+    }
+
+    input ClienteInput{
+        nombre: String
+        apellido: String
+        email: String
+        telefono: String
+        status: StatusCliente
+        password: String,
+        empresa: ID
 
     }
 
@@ -128,19 +161,29 @@ const typeDefs = gql`
     }
 
     input PedidoInput{
-        pedido: [PedidoProductoInput]!
-        total: Float!
-        cliente : ID!
-        empleado: ID!
-        fecha: String!
-        estado: EstadoPedido!
+        pedido: [PedidoProductoInput]
+        total: Float
+        cliente : ID
+        empleado: ID
+        fecha: String
+        estado: EstadoPedido
+        empresa: ID
+        cupon: ID
 
     }
+
+    input CorreoInput{
+        destinatario: String!
+        sujeto: String!
+        cuerpo: String!
+    }
+
 
     enum EstadoPedido{
         PENDIENTE
         COMPLETADO
         LISTADO
+        CANCELADO
     }
 
     enum StatusUsuario{
@@ -163,38 +206,63 @@ const typeDefs = gql`
         ADMINISTRADOR
         EMPLEADO
     }
+    enum Intervalo{
+        SEMANA
+        MES 
+        CANCELADO 
+        PASADO 
+        TODO
+    }
+    enum Tiempo{
+        SEMANA
+        MES
+    }
 
     type Query{
         #usuarios
         obtenerUsuario : Usuario
         obtenerUnUsuario(id: ID!) : Usuario
         obtenerUsuarios: [Usuario]
+        obtenerUsuariosempresa: [Usuario]
         #Productos
         obtenerProductos(id: ID!): [Producto]
         obtenerProducto(id: ID!): Producto
+        obtenerProductosEmpresa: [Producto]
         #clientes
         obtenerClientes: [Cliente]
-        obtenerClientesVendedor: [Cliente]
+        obtenerClientesEmpresa: [Cliente]
+        obtenerClientesPendientesEmpresa: [Cliente]
         obtenerCliente(id: ID!): Cliente
         #pedidos
         obtenerPedidos: [Pedido]
-        obtenerPedidosVendedor : [Pedido]
+        obtenerPedidosVendedor(intervalo: Intervalo ) : [Pedido]
+        obtenerSolicitudesPedidos: [Pedido]
         obtenerPedido(id: ID!) : Pedido
         obtenerPedidosEstado (estado: String!): [Pedido]
+        obtenerProximasCitas(id: ID!): [Pedido]
+
+        obtenerCitasCliente(intervalo: Intervalo ): [Pedido]
         #Busquedas Avanzadas
         mejoresClientes: [TopCliente]
         mejoresVendedores: [TopVendedor]
-
+        obteneringresos(tiempo: Tiempo): Float
         buscarProducto(texto: String!): [Producto]
         #empresas
         obtenerEmpresas: [Empresa]
         obtenerEmpresa(id:ID!): Empresa
+        obtenerMiEmpresa: Empresa
+        #cupones
+        obtenerCuponesEmpresa: [Cupon]
+        obtenerCuponesValidos: [Cupon]
+        obtenerUnCupon(id:ID!): Cupon
     }
     type Mutation {
         # Usuarios
         nuevoUsuario(input: UsuarioInput ) : Usuario
         autenticarUsuario(input: AutenticarInput) : Token
+        autenticarCliente(input: AutenticarClienteInput) : Token
         eliminarUsuario(id: ID!): String
+        actualizarUsuario(id: ID!, input: UsuarioInputActualizar) : Usuario
 
         # Productos
         nuevoProducto(input: ProductoInput) : Producto
@@ -205,7 +273,7 @@ const typeDefs = gql`
         nuevoCliente(input: ClienteInput): Cliente
         actualizarCliente(id: ID!, input: ClienteInput): Cliente
         eliminarCliente(id: ID!): String
-
+        nuevoClienteEmpresa(input: ClienteInput): Cliente
         #Pedidos
         nuevoPedido(input: PedidoInput): Pedido
         actualizarPedido(id: ID!, input: PedidoInput ) : Pedido
@@ -215,6 +283,15 @@ const typeDefs = gql`
         nuevaEmpresa(input: EmpresaInput ): Empresa
         eliminarEmpresa(id: ID!): String
         actualizarEmpresa(id: ID! input : EmpresaInput): Empresa
+
+        #cupones
+        nuevoCupon(input: CuponInput): Cupon
+        eliminarCupon(id: ID!): String
+
+        #correos
+        correoEmpresa(input: CorreoInput) : String
+        
+
     }
 `;
 module.exports = typeDefs;
