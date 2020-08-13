@@ -86,6 +86,17 @@ const typeDefs = gql`
         empresa: ID
     }
 
+    type Resumen {
+        id: ID
+        total: Float
+        cantidad: Float
+    }
+
+    type Ventas{
+        _id: ID
+        total: Float
+    }
+
     input CuponInput {
         nombre: String!
         descuento: Float!
@@ -214,6 +225,7 @@ const typeDefs = gql`
         TODO
     }
     enum Tiempo{
+        DIA
         SEMANA
         MES
     }
@@ -245,7 +257,8 @@ const typeDefs = gql`
         #Busquedas Avanzadas
         mejoresClientes: [TopCliente]
         mejoresVendedores: [TopVendedor]
-        obteneringresos(tiempo: Tiempo): Float
+        obteneringresos(tiempo: Tiempo): Resumen
+        obtenerEstadisticas(tiempo: Tiempo): [Ventas]
         buscarProducto(texto: String!): [Producto]
         #empresas
         obtenerEmpresas: [Empresa]

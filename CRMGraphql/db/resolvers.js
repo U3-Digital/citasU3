@@ -294,34 +294,111 @@ const resolvers = {
 
             return cupones;
         },
-        obteneringresos: async(_, { tiempo }, ctx) => {
+        obtenerEstadisticas: async(_,{tiempo},ctx) =>{
+            const {empresa} = ctx.usuario;
             const today = new Date(Date.now());
-            const week = new Date(Date.now() + 604800000)
-            const month = new Date(`${today.getFullYear()}-${today.getMonth()+2}-01`)
+            const week = new Date(Date.now() -(86400000*(today.getDay())))
             const imonth = new Date(`${today.getFullYear()}-${today.getMonth()+1}-01`)
+            const month = new Date(`${today.getFullYear()}-${today.getMonth()+2}-01`)
+            const tomorrow = new Date(`${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()+1};00:00:00`);
+
+            if (tiempo === "SEMANA") {
+                const grafica = await Pedido.aggregate([
+                    { $match: { estado: "COMPLETADO",fecha: { $gte: week, $lte: today }} },
+                    {
+                        $group: {
+                            _id: "$fecha",
+                            total: { $sum: '$total' }
+                            
+                        }
+                    },
+                    {
+                        $sort: { _id: 1 }
+                    }
+                ]);
+                return grafica;
+            }
+            if(tiempo === "MES"){
+                const grafica = await Pedido.aggregate([
+                    { $match: { estado: "COMPLETADO",fecha: { $gte: imonth, $lte: month }} },
+                    {
+                        $group: {
+                            _id: "$fecha",
+                            total: { $sum: '$total' }
+                            
+                        }
+                    },
+                    {$sort: { _id: 1 }}
+                ]);
+                return grafica;
+            }
+            if(tiempo ==="DIA"){
+                const grafica = await Pedido.aggregate([
+                    { $match: { estado: "COMPLETADO", fecha: { $gte: today, $lte: tomorrow }} },
+                    {
+                        $group: {
+                            _id: "$fecha",
+                            total: { $sum: '$total' }
+                            
+                        }
+                    },
+                    {$sort: { _id: 1 }}
+                ]);
+                return grafica;
+            }
+        },
+        obteneringresos: async(_, { tiempo }, ctx) => {
+            const {empresa} = ctx.usuario;
+            const today = new Date(Date.now());
+            const week = new Date(Date.now() -(86400000*(today.getDay())))
+            const imonth = new Date(`${today.getFullYear()}-${today.getMonth()+1}-01`)
+            const month = new Date(`${today.getFullYear()}-${today.getMonth()+2}-01`)
+            const tomorrow = new Date(`${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()+1};00:00:00`);
+
             if (tiempo === "SEMANA") {
                 const dinero = await Pedido.aggregate([
-                    { $match: { estado: "COMPLETADO", fecha: { $gte: today, $lte: week } } },
+                    { $match: { estado: "COMPLETADO",fecha: { $gte: week, $lte: today }}},
                     {
                         $group: {
                             _id: null,
-                            total: { $sum: '$total' }
+                            total: { $sum: '$total' },
+                            cantidad: { $sum: 1 }
+
                         }
                     }
                 ]);
-                return dinero[0].total;
+                console.log(dinero);
+                return  dinero[0];
             }
             if (tiempo === "MES") {
                 const dinero = await Pedido.aggregate([
-                    { $match: { estado: "COMPLETADO", fecha: { $gte: imonth, $lte: month } } },
+                    { $match: {estado: "COMPLETADO", fecha: { $gte: imonth, $lte: month } } },
                     {
                         $group: {
                             _id: null,
-                            total: { $sum: '$total' }
+                            total: { $sum: '$total' },
+                            cantidad: { $sum: 1 }
                         }
                     }
                 ]);
-                return dinero[0].total;
+                return dinero[0];
+            }
+            if(tiempo === "DIA"){
+                const dinero = await Pedido.aggregate([
+                    { $match: { estado: "COMPLETADO", fecha: { $gte: today, $lte: tomorrow } } },
+                    {
+                        $group: {
+                            _id: null,
+                            total: { $sum: '$total' },
+                            cantidad: { $sum: 1 }
+                        }
+                    }
+                ]);
+                if(!dinero[0]){
+                    return 0;
+                }else{
+                    return dinero[0];    
+                }    
             }
 
 
@@ -341,6 +418,7 @@ const resolvers = {
                     $group: {
                         _id: "$cliente",
                         total: { $sum: '$total' }
+                        
                     }
                 },
                 {

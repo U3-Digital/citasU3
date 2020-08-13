@@ -29,6 +29,7 @@ const SidebarUsuarios = () =>{
     //console.log(data);
     if(!data.obtenerUsuario){
         router.push('/controlpanel/login');
+        return null;
     }
 
     const {obtenerUsuario} = data;

@@ -5,7 +5,7 @@ import PedidoState from '../context/pedidos/PedidoState';
 
 
 const MyApp = ({Component, pageProps}) =>{
-
+    
     return(
     <ApolloProvider client= {client}>
         <PedidoState>

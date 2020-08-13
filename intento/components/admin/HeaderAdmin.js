@@ -31,8 +31,10 @@ const HeaderAdmin = () =>{
 
     //console.log(data);
     if(!data.obtenerUsuario){
-        return router.push('/4dm1n/login');
+        router.push('/4dm1n/login');
+        return null;
     }
+
     const{nombre, apellido,rol} = data.obtenerUsuario;
     if(rol !== 'SUPERADMINISTRADOR'){ 
         Swal.fire({
