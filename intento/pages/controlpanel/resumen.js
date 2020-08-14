@@ -18,17 +18,17 @@ const resumen = () =>{
         <LayoutUsuarios>
           <div className="xl:flex justify-between">
             <h1 className="text-2xl text-gray-800 font-light">Resumen de ingresos</h1>
-              <Select
-                  id = 'filtros'
-                  className="py-2 xl:ml-5 xl:w-1/3 xl:px-5 "
-                  options={opciones}
-                  noOptionsMessage= {() =>"No hay resultados"}
-                  onChange= {selectedOption => {
-                      //console.log(selectedOption.id);
-                      setIntervalo(selectedOption);
-                  }}
-                  value={intervalo}
-              />
+                <Select
+                    id = 'filtros'
+                    className="py-2 xl:ml-5 xl:w-1/3 xl:px-5 "
+                    options={opciones}
+                    noOptionsMessage= {() =>"No hay resultados"}
+                    onChange= {selectedOption => {
+                        //console.log(selectedOption.id);
+                        setIntervalo(selectedOption);
+                    }}
+                    value={intervalo}
+                />
           </div>
           
           <TablaResumenes

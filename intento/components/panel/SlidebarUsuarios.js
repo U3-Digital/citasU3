@@ -18,7 +18,7 @@ const OBTENER_USUARIO = gql`
 const SidebarUsuarios = () =>{
 
     const[menu,setmenu] = useState(false);
-    const [assideform,setassideform] = useState(` bg-gray-800 sm:w-1/3 xl:w-1/5 sm:min-h-screen p-5`)
+    const [assideform,setassideform] = useState(` bg-gray-800 sm:w-1/3 xl:w-1/5 sm:min-h-screen  p-5`)
     const [color,setColor] = useState(`text-white`)
     const router = useRouter();
     //query de apollo 
@@ -49,11 +49,11 @@ const SidebarUsuarios = () =>{
     const mostrarmenu = () =>{
         if(menu === false){
             setmenu(true);
-            setassideform(`outline-none xl:w-16 sm:h-16  px-5`)
+            setassideform(`outline-none xl:w-16   sm:h-16  px-5`)
             setColor(null)
         }else{
             setmenu(false);
-            setassideform(` outline-none bg-gray-800 sm:w-1/3 xl:w-1/5 sm:min-h-screen p-5`)
+            setassideform(` outline-none bg-gray-800 sm:w-1/3 xl:w-1/5  sm:min-h-screen p-5`)
             setColor("text-white")
         }
     }

@@ -248,6 +248,7 @@ const typeDefs = gql`
         #pedidos
         obtenerPedidos: [Pedido]
         obtenerPedidosVendedor(intervalo: Intervalo ) : [Pedido]
+        obtenerPedidosFecha(fecha: String!): [Pedido]
         obtenerSolicitudesPedidos: [Pedido]
         obtenerPedido(id: ID!) : Pedido
         obtenerPedidosEstado (estado: String!): [Pedido]

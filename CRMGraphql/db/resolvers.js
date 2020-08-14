@@ -137,6 +137,18 @@ const resolvers = {
                 console.log(error);
             }
         },
+        obtenerPedidosFecha: async(_,{fecha},ctx) =>{
+            const today = new Date(fecha);
+            const tomorrow = new Date(`${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()+2};00:00:00`);
+            
+            try {
+                const pedidos = await Pedido.find({ empleado: ctx.usuario.id, fecha:{ $gte: today, $lt: tomorrow } }, null, { sort: { fecha: 1 } }).populate('cliente');
+                //console.log(ctx.usuario.id);
+                return pedidos;
+            } catch (error) {
+                console.log(error);
+            }
+        } ,
         obtenerPedidosVendedor: async(_, { intervalo }, ctx) => {
             const today = new Date(Date.now());
             const week = new Date(Date.now() + 604800000)
@@ -395,7 +407,7 @@ const resolvers = {
                     }
                 ]);
                 if(!dinero[0]){
-                    return 0;
+                    return {_id:null, total:0, cantidad:0};
                 }else{
                     return dinero[0];    
                 }    
