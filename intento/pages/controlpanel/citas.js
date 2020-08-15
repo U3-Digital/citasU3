@@ -22,7 +22,7 @@ const opciones = [
 const citas = () =>{
     const [intervalo, setIntervalo] =useState({ value: 'TODO', label: 'Todas' });
     const [fechaEspecifica,setFechaEspecifica] = useState(null);
-    const [visible,setvisible] = useState("hidden");
+    const [visible,setvisible] = useState(true);
     return(
         <LayoutUsuarios>
             <div className="xl:flex justify-between">
@@ -30,7 +30,7 @@ const citas = () =>{
                     <input 
                         className="py-2 xl:ml-5 xl:w-1/3 xl:px-5 rounded"
                         id="fecha"
-                        hidden
+                        hidden = {visible}
                         type= "date"
                         onChange={fechaSeleccionada =>{
                             setFechaEspecifica(fechaSeleccionada.target.value);
@@ -45,7 +45,11 @@ const citas = () =>{
                         onChange= {selectedOption => {
                             //console.log(selectedOption.id);
                             setIntervalo(selectedOption);
-                            console.log(intervalo);
+                            if(selectedOption.value === "PERSONALIZADO"){
+                                setvisible(false);
+                            }else{
+                                setvisible(true);
+                            }
                         }}
                         value={intervalo}
                     />
