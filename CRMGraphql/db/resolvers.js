@@ -970,7 +970,7 @@ const resolvers = {
             const mensajeEmpresa = `
             <div  style="background: #3D4B63;">
                 <div>
-                    <img src="https://u3digital.com.mx/wp-content/uploads/2020/06/u3-1536x1536.png" width="90" height="90" alt=""/>
+                    <img src="http://localhost:3000/header.jpg" width="90" height="90" alt=""/>
                 </div>
                 <div>
                 <p>${nombre}</p>

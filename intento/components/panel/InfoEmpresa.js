@@ -28,7 +28,7 @@ const InfoEmpresa = () =>{
         <div className="w-full max-w-xl e bg-white shadow-md px-4 pt-6 pb-8 mb-4">
             <div className="flex">
                 <div>
-                    <img src="../../../assets/grande.jpg"
+                    <img src="https://u3digital.com.mx/wp-content/uploads/2020/06/u3-1536x1536.png"
                     className="justify center w-32 h-32 rounded-full" id="imgfoto"></img>
                 </div>
                 <div>
