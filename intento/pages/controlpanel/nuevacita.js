@@ -137,53 +137,40 @@ const NuevoPedido = () => {
     }
 
     const mostrarmensaje = () => {
-        return ( <
-            div className = "bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto" >
-            <
-            p > { mensaje } < /p> <
-            /div>
+        return ( <div className = "bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto" >
+            <p> { mensaje } </p>
+             </div>
         )
     }
 
-    return ( <
-        LayoutUsuarios >
+    return ( 
+    <LayoutUsuarios>
 
-        <
-        h1 className = "text-2xl text-gray-800 font-light" > Nuevo Pedido < /h1>
+        <h1 className = "text-2xl text-gray-800 font-light" > Nuevo Pedido </h1>
 
         { mensaje && mostrarmensaje() }
 
-        <
-        div className = "flex justify-center mt-5" >
-        <
-        div className = " w-full max-w-lg" >
-        <
-        AsignarCliente / >
-        <
-        AsignarUsuario / >
-        <
-        AsignarFecha / >
-        <
-        AsignarHora / >
-        <
-        AsignarProductos / >
-        <
-        ResumenPedido / >
-        <
-        Total / > { mensaje && mostrarmensaje() } <
-        button type = "button"
+        <div className = "flex justify-center mt-5" >
+        <div className = " w-full max-w-lg" >
+        <AsignarCliente />
+        <AsignarUsuario  />
+        <AsignarFecha />
+        <AsignarHora />
+        <AsignarProductos />
+        <ResumenPedido />
+        <Total /> { mensaje && mostrarmensaje() } <button 
+        type = "button"
         className = { ` bg-gray-800 w-full  mt-5 p-2 text-white uppercase font-bold hover:bg-gray-900 ${validarPedido()}` }
         onClick = {
             () => crearNuevoPedido() } >
-        Registrar Cita < /button> <
-        /div>
+        Registrar Cita 
+        </button> 
+        </div>
 
-        <
-        /div>
+        </div>
 
-        <
-        /LayoutUsuarios>
-    )
+    </LayoutUsuarios>
+    );
 }
 
 export default NuevoPedido;

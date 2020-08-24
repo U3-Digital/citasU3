@@ -19,6 +19,9 @@ const OBTENER_CITAS = gql`
             total
             fecha
             estado
+            empresa{
+                nombre
+            }
             cupon{
                 nombre
                 descuento
@@ -45,12 +48,12 @@ const TablaCitas =({filtro}) =>{
 
     if(loading) return('Cargando...');
 
-
+    console.log(data);
 
     if(data.obtenerCitasCliente.length === 0){
         return(
             <div className="flex justify-center py-2 ">
-                <p className="mt-5 my-2 text-gray-700 p-2 text-sm font-bold ">No tienes citas En esta seccion</p>
+                <p className="mt-5 my-2 text-gray-200 p-2 text-sm font-bold ">No tienes citas En esta seccion</p>
             </div>
         );
     }

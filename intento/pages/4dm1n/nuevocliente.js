@@ -28,8 +28,6 @@ const OBTENER_EMPRESAS = gql`
         obtenerEmpresas{
             id
             nombre
-            direccion
-            fotos
         }
     }
 `;
@@ -94,11 +92,15 @@ const NuevoCliente = () =>{
             email: Yup.string().required('El correo es necesario'),
             telefono: Yup.string().required('Es obligatorio el telefono del cliente'),
             status: Yup.string().required('favor de colocar el status del cliente'),
-            password: Yup.string().required('La contrseña es necesaria'),
-            empresa : Yup.string().required('es necesario')
+            password: Yup.string().required('La contrseña es necesaria')
         }),
         onSubmit: async valores =>{
-            const {nombre,apellido,email,password,telefono,status,empresa} = valores;
+            const {nombre,apellido,email,password,telefono,status} = valores;
+            let empresas = [];
+            empresa.map(empresaunica =>{
+                empresas.push(empresaunica.id);
+            });
+            
             try {
                 const {data} = await nuevoCliente({
                     variables:{
@@ -109,7 +111,7 @@ const NuevoCliente = () =>{
                             password,
                             telefono,
                             status,
-                            empresa
+                            empresa: empresas
                         }
                     }
                 });  
@@ -312,9 +314,10 @@ const NuevoCliente = () =>{
                                         getOptionValue={opciones => opciones.id}
                                         getOptionLabel={opciones => opciones.nombre}
                                         noOptionsMessage= {() =>"No hay resultados"}
+                                        isMulti={true}
                                         onChange= {selectedOption => {
                                             //console.log(selectedOption.value);
-                                            formik.handleChange("empresa")(selectedOption.id);
+                                            //formik.handleChange("empresa")(selectedOption.id);
                                             setEmpresa(selectedOption);
                                         }}
                                     />

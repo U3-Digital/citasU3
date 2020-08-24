@@ -35,7 +35,7 @@ const MANDAR_CORREO = gql`
 
 const Cita = ({cita}) =>{
     const router = useRouter();
-    const {cliente:{id: idcliente,nombre, apellido,email},pedido,id,total,fecha,estado,empresa,cupon} = cita;
+    const {cliente:{id: idcliente,nombre, apellido,email},empresa:{nombre:nombreEmpresa},pedido,id,total,fecha,estado,empresa,cupon} = cita;
 
     const fechacita = new Date(parseInt(fecha));
     let formatted_date =fechacita.getDate() + "/" +(fechacita.getMonth()+1) + "/" +fechacita.getFullYear();
@@ -196,6 +196,10 @@ const Cita = ({cita}) =>{
                 {formatted_date}
                 <svg fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" className="w-4 h-4 mr-2 ml-2" stroke="currentColor"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>  
                 {fechacita.getHours()}:00
+            </p>
+            <p className="flex items-center my-2">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" className="bookmark w-4 h-4 mr-2"><path strokelinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+                {nombreEmpresa}
             </p>
             {fechacita < Date.now()  && estadoPedido ==="LISTADO"?(
                 <div className="bg-white py-2 px-3 w-full my-3 max-w-sm text-center mx-auto">

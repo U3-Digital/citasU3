@@ -76,14 +76,16 @@ const FormEditaCliente  = ({id}) =>{
         email: Yup.string().required('El correo es necesario'),
         telefono: Yup.string().required('Es obligatorio el telefono del cliente'),
         status: Yup.string().required('favor de colocar el status del cliente'),
-        password: Yup.string(),
-        empresa : Yup.string().required('es necesario')
+        password: Yup.string().min(6,"La contraseña debe tener un minimo de 6 caracteres")
     });
 
 
     const actualizaInfoCliente = async (valores) =>{
         const {nombre,apellido,email,telefono,password,status} = valores;
-
+        let empresas = [];
+        empresa.map(empresaunica =>{
+            empresas.push(empresaunica.id);
+        });
         
 
         if(password){
@@ -97,7 +99,8 @@ const FormEditaCliente  = ({id}) =>{
                           email,
                           telefono,
                           password,
-                          status
+                          status,
+                          empresa: empresas
                       }
                     }
                 });
@@ -124,7 +127,8 @@ const FormEditaCliente  = ({id}) =>{
                           apellido,
                           email,
                           telefono,
-                          status
+                          status,
+                          empresa: empresas
                       }
                     }
                 });
@@ -336,9 +340,9 @@ const FormEditaCliente  = ({id}) =>{
                                             getOptionValue={opciones => opciones.id}
                                             getOptionLabel={opciones => opciones.nombre}
                                             noOptionsMessage= {() =>"No hay resultados"}
+                                            isMulti= {true}
                                             onChange= {selectedOption => {
                                                 //console.log(selectedOption.value);
-                                                props.handleChange("empresa")(selectedOption.id);
                                                 setEmpresa(selectedOption);
                                             }}
                                             value= {empresa}

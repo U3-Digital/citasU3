@@ -9,9 +9,7 @@ const OBTENER_CLIENTES = gql `
             nombre
             apellido
             email
-            empresa{
-                nombre
-            }
+            status
         }
     }
 `;
@@ -33,7 +31,7 @@ const TablaClientes = () =>{
               <tr className="text-white">
                 <th className="w-1/5 py-2">Nombre</th>
                 <th className="w-1/5 py-2">Email</th>
-                <th className="w-1/5 py-2">Empresa</th>
+                <th className="w-1/5 py-2">Estado</th>
                 <th className="w-1/5 py-2">Eliminar</th>
                 <th className="w-1/5 py-2">Editar</th>
                 

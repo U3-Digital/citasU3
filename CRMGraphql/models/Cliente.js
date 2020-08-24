@@ -36,11 +36,11 @@ const ClientesSchema = mongoose.Schema({
         trim: true  ,
         default: "PENDIENTE"
     },
-    empresa:{
+    empresa:[{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: ('Empresa') 
-    }
+    }]
    
 });
 module.exports = mongoose.model('Cliente',ClientesSchema);

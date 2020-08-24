@@ -6,6 +6,7 @@ import Link from 'next/Link';
 import TablaCitas from '../components/frontend/citas/TablaCitas';
 import Select from 'react-select';
 import React,{useState} from 'react'
+import TablaEmpresas from '../components/frontend/empresas/TablaEmpresas';
 
 
          
@@ -23,31 +24,48 @@ const opciones = [
 
 export default function Index() {
   const [intervalo, setIntervalo] =useState({ value: 'TODO', label: 'Todas' });
+  const [seleccion,setSeleccion] = useState(false);
+
   
+ const CambiaOpcion = () =>{
+    setSeleccion(true)
+ }
+
+ const muestraEmpresas = () =>{
+     setSeleccion(false)
+ }
+
   return (
     
     <div>
       <Layout>
-        <div className="xl:flex justify-between">
-          <h1 className="text-2xl text-gray-800 font-light">Mis citas</h1>
-              <Select
-                id = 'filtro'
-                className="py-2 xl:ml-5 xl:w-1/3 xl:px-5 "
-                options={opciones}
-                noOptionsMessage= {() =>"No hay resultados"}
-                onChange= {selectedOption => {
-                    //console.log(selectedOption.id);
-                    setIntervalo(selectedOption);
-                }}
-                value={intervalo}
-              />
-        </div>
-        <Link href="nuevacita">
-          <a className="bg-blue-800 py-2 px-5 mt-3 inline-block text-white rounded  text-sm hover:bg-gray-800 mb-3 uppercase font-bold">Nueva Cita</a>
-        </Link>
-        <TablaCitas
-          filtro = {intervalo.value}
-        />
+            <div className="xl:flex justify-between">
+                <div className="flex mt-2 xl:w-1/3 justify-center overflow-x-auto">
+                    <button  className="bg-white w-1/2 ml-2 rounded text-xl font-black py-2" onClick={()=>CambiaOpcion()}>Mis citas</button>
+                    <button  className="bg-white w-1/2 ml-2 mr-2 rounded text-xl font-black py-2" onClick={()=>muestraEmpresas()}>Agendar nueva cita</button>
+                </div>
+                <Select
+                    id = 'filtro'
+                    className="py-2 xl:mr-5 xl:w-1/3 xl:px-5 "
+                    options={opciones}
+                    hidden
+                    noOptionsMessage= {() =>"No hay resultados"}
+                    onChange= {selectedOption => {
+                        //console.log(selectedOption.id);
+                        setIntervalo(selectedOption);
+                    }}
+                    value={intervalo}
+                />
+            </div>
+            {seleccion ?(
+                <TablaCitas
+                    filtro = {intervalo.value}
+                />
+            ):(
+                <TablaEmpresas/>
+            )}
+            
+          
       </Layout>
     </div>
   )

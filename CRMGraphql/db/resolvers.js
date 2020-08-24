@@ -206,7 +206,7 @@ const resolvers = {
 
             if (intervalo === "SEMANA") {
                 try {
-                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "LISTADO", fecha: { $gte: today, $lte: week } }, null, { sort: { fecha: 1 } }).populate('cliente');
+                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "LISTADO", fecha: { $gte: today, $lte: week } }, null, { sort: { fecha: 1 } }).populate('cliente').populate('empresa');
                     //console.log(ctx.usuario.id);
                     return pedidos;
                 } catch (error) {
@@ -215,7 +215,7 @@ const resolvers = {
             }
             if (intervalo === "MES") {
                 try {
-                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "LISTADO", fecha: { $gte: today, $lte: month } }, null, { sort: { fecha: 1 } }).populate('cliente');
+                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "LISTADO", fecha: { $gte: today, $lte: month } }, null, { sort: { fecha: 1 } }).populate('cliente').populate('empresa');
                     //console.log(ctx.usuario.id);
                     return pedidos;
                 } catch (error) {
@@ -224,7 +224,7 @@ const resolvers = {
             }
             if (intervalo === "CANCELADO") {
                 try {
-                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "CANCELADO" }, null, { sort: { fecha: 1 } }).populate('cliente');
+                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "CANCELADO" }, null, { sort: { fecha: 1 } }).populate('cliente').populate('empresa');
                     //console.log(ctx.usuario.id);
                     return pedidos;
                 } catch (error) {
@@ -233,7 +233,7 @@ const resolvers = {
             }
             if (intervalo === "PASADO") {
                 try {
-                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "COMPLETADO" }, null, { sort: { fecha: 1 } }).populate('cliente').populate('cupon');
+                    const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "COMPLETADO" }, null, { sort: { fecha: 1 } }).populate('cliente').populate('cupon').populate('empresa');
                     //console.log(ctx.usuario.id);
                     return pedidos;
                 } catch (error) {
@@ -241,7 +241,7 @@ const resolvers = {
                 }
             }
             try {
-                const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "LISTADO" }, null, { sort: { fecha: 1 } }).populate('cliente');
+                const pedidos = await Pedido.find({ cliente: ctx.usuario.id, estado: "LISTADO" }, null, { sort: { fecha: 1 } }).populate('cliente').populate('empresa');
                 //console.log(ctx.usuario.id);
                 return pedidos;
             } catch (error) {
@@ -251,7 +251,7 @@ const resolvers = {
         obtenerProximasCitas: async(_, { id }, ctx) => {
             const today = new Date(Date.now());
             try {
-                const pedidos = await Pedido.find({ cliente: id, fecha: { $gte: today } }, null, { sort: { fecha: 1 } }).limit(5).populate('cliente')
+                const pedidos = await Pedido.find({ cliente: id, fecha: { $gte: today } }, null, { sort: { fecha: 1 } }).limit(5).populate('cliente');
                     //console.logconsole.log(pedidos.length);
                 return pedidos;
             } catch (error) {
@@ -379,7 +379,7 @@ const resolvers = {
                         }
                     }
                 ]);
-                console.log(dinero);
+                //console.log(dinero);
                 return  dinero[0];
             }
             if (tiempo === "MES") {
@@ -512,6 +512,15 @@ const resolvers = {
             }
 
             return miEmpresa;
+        },
+        obtenerMisEmpresas: async(_,{}, ctx) =>{
+            const {id} = ctx.usuario;
+            const clienteEmpresas = await Cliente.findById(id).populate('empresa');
+
+            if(!clienteEmpresas){
+                throw new Error('El cliente no existe');
+            }
+            return clienteEmpresas;
         }
     },
     Mutation: {
@@ -550,7 +559,7 @@ const resolvers = {
         eliminarUsuario: async(_, { id }, ctx) => {
 
             const { rol } = ctx.usuario;
-            console.log(rol);
+            //console.log(rol);
             if (rol === "EMPLEADO") {
                 throw new Error('no cuentas con las credenciales para registrar un usuario');
             }
@@ -613,9 +622,9 @@ const resolvers = {
 
         },
         autenticarCliente: async(_, { input }) => {
-            const { email, password, empresa } = input;
+            const { email, password} = input;
             //si el usuario existe 
-            const existeCliente = await Cliente.findOne({ email, empresa });
+            const existeCliente = await Cliente.findOne({ email});
             if (!existeCliente) {
                 throw new Error('El Cliente no existe en esta empresa');
             }
@@ -818,14 +827,14 @@ const resolvers = {
             }
             //cliente existe
             const existeCliente = await Cliente.findById(input.cliente);
-            console.log(existeCliente);
+            //console.log(existeCliente);
             if (!existeCliente) {
                 throw new Error('El cliente no existe');
             }
             //Si el cliente y pedido pertence al vendedor
-            if (existeCliente.empresa.toString() !== ctx.usuario.empresa) {
+            /*if (existeCliente.empresa.toString() !== ctx.usuario.empresa) {
                 throw new Error('No tienes las credenciales');
-            }
+            }*/
             //Revisar el stock
             if (input.pedido) {
                 for await (const articulo of input.pedido) {

@@ -26,7 +26,7 @@ const OBTENER_CLIENTES = gql `
 
 
 const Cliente = ({cliente}) =>{
-    const {id,nombre, apellido, email, status, empresa} = cliente;
+    const {id,nombre, apellido, email, status} = cliente;
     const [eliminarCliente] = useMutation(ELIMINAR_CLIENTE,{
         update(cache){
             //obtener una copia del objeto de cache
@@ -87,7 +87,7 @@ const Cliente = ({cliente}) =>{
         <tr >
             <td className="border px-4 py-2">{nombre} {apellido}</td>
             <td className="border px-4 py-2">{email}</td>
-            <td className="border px-4 py-2">{empresa.nombre}</td>
+            <td className="border px-4 py-2">{status}</td>
             <td className="border px-4 py-2">
                 <button type="button" className="flex justify-center items-center bg-red-800 py-2 px-4 w-full text-white rounded text-xs uppercase font-bold" onClick={() =>confirmarEliminarCliente(id)}>
                     Eliminar

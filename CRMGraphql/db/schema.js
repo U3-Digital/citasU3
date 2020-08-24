@@ -30,7 +30,7 @@ const typeDefs = gql`
         email: String
         telefono: String
         status: StatusCliente
-        empresa: Empresa
+        empresa: [Empresa]
     }
 
     type PedidoGrupo{
@@ -49,6 +49,19 @@ const typeDefs = gql`
         fecha: String 
         estado: EstadoPedido
         empresa: ID
+        cupon: Cupon
+    }
+
+
+    type PedidoCliente{
+        id: ID 
+        pedido: [PedidoGrupo]
+        total: Float
+        cliente : Cliente
+        empleado : Usuario
+        fecha: String 
+        estado: EstadoPedido
+        empresa: Empresa
         cupon: Cupon
     }
 
@@ -145,7 +158,6 @@ const typeDefs = gql`
     input AutenticarClienteInput{
         email: String!
         password: String!
-        empresa: ID!
     }
 
     input ProductoInput{
@@ -161,7 +173,7 @@ const typeDefs = gql`
         telefono: String
         status: StatusCliente
         password: String,
-        empresa: ID
+        empresa: [ID]
 
     }
 
@@ -254,7 +266,7 @@ const typeDefs = gql`
         obtenerPedidosEstado (estado: String!): [Pedido]
         obtenerProximasCitas(id: ID!): [Pedido]
 
-        obtenerCitasCliente(intervalo: Intervalo ): [Pedido]
+        obtenerCitasCliente(intervalo: Intervalo ): [PedidoCliente]
         #Busquedas Avanzadas
         mejoresClientes: [TopCliente]
         mejoresVendedores: [TopVendedor]
@@ -265,6 +277,7 @@ const typeDefs = gql`
         obtenerEmpresas: [Empresa]
         obtenerEmpresa(id:ID!): Empresa
         obtenerMiEmpresa: Empresa
+        obtenerMisEmpresas: Cliente
         #cupones
         obtenerCuponesEmpresa: [Cupon]
         obtenerCuponesValidos: [Cupon]
