@@ -61,8 +61,12 @@ export default function Index() {
                 <TablaCitas
                     filtro = {intervalo.value}
                 />
-            ):(
+            ):(<>
                 <TablaEmpresas/>
+                <div className="flex justify-center py-2 ">
+                    <p className="mt-5 my-2 text-gray-200 p-2 text-sm font-bold ">Para registrarse en una nueva empresa, pide a un administrador que te registre</p>
+                </div>
+                </>
             )}
             
           

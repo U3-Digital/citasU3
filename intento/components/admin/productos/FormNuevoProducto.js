@@ -122,7 +122,7 @@ const FormNuevoProducto = () =>{
                         className=" shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="nombre"
                         type= "text"
-                        placeholder="Nombre Usuario"
+                        placeholder="Nombre Producto"
                         onChange={formik.handleChange}
                         onBlur = {formik.handleBlur}
                         value = {formik.values.nombre}

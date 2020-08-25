@@ -87,37 +87,7 @@ const NuevaEmpresa = () =>{
         }),
         onSubmit: async valores =>{
             const {nombre, direccion, email, foto, facebook, instagram, whatsapp,status} = valores;
-            
-            console.log(imagenload);
-            // Create an object of formData 
-            const formData = new FormData(); 
-            
-            // Update the formData object 
-            formData.append( 
-                "myFile.jpg", 
-                imagenload
-            ); 
-            
-            // Details of the uploaded file 
-            //console.log(imagen); 
-            console.log(formData)
-            // Request made to the backend api 
-            // Send formData object 
-            fetch('/assets', {
-                method: 'POST',
-                body: formData
-              })
-              .then(response => response.json())
-              .then(data => {
-                console.log(data.path)
-              })
-              .catch(error => {
-                console.error(error)
-              })
-            
-            //axios.post("assets/empresas/", formData); 
-
-            /*try {
+            try {
                 const {data} = await nuevaEmpresa({
                     variables: {
                         input: {
@@ -141,7 +111,7 @@ const NuevaEmpresa = () =>{
                 router.push('/4dm1n/empresas');//redireccionar a empresas 
             } catch (error) {
                 console.log(error);
-            }*/
+            }
         }
     })
 
