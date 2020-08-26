@@ -5,7 +5,6 @@ import {useQuery,gql,useMutation} from '@apollo/client';
 
 
 const Empresa = (empresa) =>{
-    console.log(empresa);
     const {nombre,direccion,email} = empresa.empresa;
 
     return(
