@@ -21,6 +21,9 @@ const InfoEmpresa = () =>{
     
     if(loading) return null;
 
+    if(!data) return null;
+
+
     const {id,nombre,direccion,email,facebook,instagram,whatsapp,fotos} = data.obtenerMiEmpresa;
 
 

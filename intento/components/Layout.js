@@ -2,6 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import Sidebar from '../components/Sidebar';
 import {useRouter, Router} from 'next/router'
+import Header from './Header';
 
 const Layout = ({children}) =>{
     const router = useRouter();
@@ -19,13 +20,18 @@ const Layout = ({children}) =>{
                     </div>
                 </div>
             ): (
-                <div className="bg-gray-800 min-h-screen justify-center">
+                <div className=" relative bg-gray-800 min-h-screen justify-center">
                     <div className="flex justify-center text-white">
                         <p className="text-white text-2xl mt-2 font-black">Bienvenido a U3Citas</p>
                     </div>
+                    
+                    <Header/>
+                    
                     <div>
                         {children}
                     </div>
+                    
+                    
                 </div>
             )}  
         </>

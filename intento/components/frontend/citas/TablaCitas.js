@@ -47,8 +47,8 @@ const TablaCitas =({filtro}) =>{
     },[startPolling, stopPolling])
 
     if(loading) return('Cargando...');
-
-    console.log(data);
+    
+    if(data.obtenerCitasCliente === null) return null;
 
     if(data.obtenerCitasCliente.length === 0){
         return(

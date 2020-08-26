@@ -27,8 +27,8 @@ const TablaEmpresas = () =>{
         
 
     );
+    if(!data) return null;
 
-    console.log(data.obtenerMisEmpresas);
     return(
         <div className="md:grid md:grid-cols-3 md:gap-4 px-2 mr-3">
             {data.obtenerMisEmpresas.empresa.map(empresa=>(
